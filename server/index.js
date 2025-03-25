@@ -1,13 +1,41 @@
 const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
 const app = express();
-require("dotenv").config();
+require("dotenv").config({ path: "./server/.env" });
 
-// Basic route to test server
+// Import routes
+const authRoutes = require("./routes/auth");
+const evidenceRoutes = require("./routes/evidence");
+const caseRoutes = require("./routes/cases");
+const blogRoutes = require("./routes/blog");
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+
+// Routes
+app.use("/auth", authRoutes);
+app.use("/evidence", evidenceRoutes);
+app.use("/cases", caseRoutes);
+app.use("/blog", blogRoutes);
+
+// Basic routes
 app.get("/", (req, res) => {
   res.send("Forensic Evidence Tracker API is running!");
 });
 
-// Start server
+const { authMiddleware } = require("./middleware/authMiddleware");
+app.get("/protected", authMiddleware, (req, res) => {
+  res.json({ message: "This is a protected route", user: req.user });
+});
+
+// MongoDB connection
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log("MongoDB connected successfully"))
+  .catch((err) => console.error("MongoDB connection error:", err));
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

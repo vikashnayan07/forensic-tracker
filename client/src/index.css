@@ -1,0 +1,147 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Existing animations (unchanged) */
+@keyframes cyber-gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+.animate-cyber-gradient {
+  background-size: 200% 200%;
+  animation: cyber-gradient 10s ease infinite;
+}
+@keyframes glitch {
+  0% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-2px, 2px);
+  }
+  40% {
+    transform: translate(-2px, -2px);
+  }
+  60% {
+    transform: translate(2px, 2px);
+  }
+  80% {
+    transform: translate(2px, -2px);
+  }
+  100% {
+    transform: translate(0);
+  }
+}
+.animate-glitch {
+  animation: glitch 0.3s linear infinite;
+}
+.cyber-text {
+  font-family: "Courier New", Courier, monospace;
+  text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+}
+.cyber-button {
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+}
+
+/* Cyber Rain (kept for outside main content) */
+@keyframes rain {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+.cyber-rain {
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 255, 0, 0.1) 0%,
+    transparent 100%
+  );
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  animation: rain 5s linear infinite;
+}
+
+/* Cyber Grid (unchanged) */
+.cyber-grid {
+  background-image: radial-gradient(circle at center, #1a0033 0%, #0d001a 70%),
+    linear-gradient(
+      45deg,
+      rgba(236, 72, 153, 0.1) 25%,
+      transparent 25%,
+      transparent 75%,
+      rgba(236, 72, 153, 0.1) 75%,
+      rgba(236, 72, 153, 0.1)
+    ),
+    linear-gradient(
+      45deg,
+      rgba(236, 72, 153, 0.1) 25%,
+      transparent 25%,
+      transparent 75%,
+      rgba(236, 72, 153, 0.1) 75%,
+      rgba(236, 72, 153, 0.1)
+    );
+  background-size: cover, 20px 20px, 20px 20px;
+  background-position: center, 0 0, 10px 10px;
+}
+
+/* New Circuit Glow Effect */
+.cyber-circuit {
+  position: relative;
+  overflow: hidden;
+}
+.cyber-circuit::before {
+  background: linear-gradient(
+      90deg,
+      rgba(236, 72, 153, 0.2) 1px,
+      transparent 1px
+    ),
+    linear-gradient(0deg, rgba(236, 72, 153, 0.2) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: none;
+}
+@keyframes circuit-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+}
+/* Existing styles... */
+
+/* Fade-in animation for modal */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Enhance hover effects */
+.cyber-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(236, 72, 153, 0.5);
+}
