@@ -687,17 +687,23 @@ function Dashboard() {
                             {item.item}
                           </h3>
                           <p className="text-gray-200">{item.description}</p>
-                          {item.photo && (
+                          {console.log("Evidence photo URL:", item.photo)}{" "}
+                          {/* Add debug logging */}
+                          {item.photo ? (
                             <LazyLoadImage
                               src={item.photo}
                               alt={item.item}
                               className="mt-4 w-full h-48 object-cover rounded-lg shadow-md"
-                              loading="lazy" // Add lazy loading
+                              loading="lazy"
                               onError={(e) =>
                                 (e.target.src =
                                   "https://via.placeholder.com/150x150?text=Image+Not+Found")
                               }
                             />
+                          ) : (
+                            <p className="text-gray-200 mt-4">
+                              No photo available
+                            </p>
                           )}
                           <p className="text-gray-300 mt-2">
                             Case:{" "}
