@@ -19,6 +19,7 @@ app.use(
     credentials: true,
   })
 );
+console.log("CORS middleware applied");
 
 // Handle preflight OPTIONS requests
 app.options(
@@ -30,6 +31,7 @@ app.options(
     credentials: true,
   })
 );
+console.log("OPTIONS handler applied");
 
 app.use(express.json());
 
@@ -41,6 +43,7 @@ app.use("/blog", blogRoutes);
 
 // Basic routes
 app.get("/", (req, res) => {
+  console.log("GET / request received");
   res.send("Forensic Evidence Tracker API is running!");
 });
 
