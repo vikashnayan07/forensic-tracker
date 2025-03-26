@@ -11,7 +11,13 @@ const caseRoutes = require("./routes/cases");
 const blogRoutes = require("./routes/blog");
 
 // Middleware
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://forensic-tracker-frontend.onrender.com",
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 // Routes
