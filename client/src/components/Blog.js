@@ -7,6 +7,7 @@ function Blog() {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [newsError, setNewsError] = useState(""); // State for news-specific errors
   const [isAdmin, setIsAdmin] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("All");
@@ -35,6 +36,7 @@ function Blog() {
           throw new Error("No token found. Please log in.");
         }
 
+        // Fetch admin blogs
         const blogResponse = await fetch(
           `${process.env.REACT_APP_API_URL}/blog`,
           {
@@ -51,21 +53,32 @@ function Blog() {
         console.log("Fetched blogs:", blogData);
         setBlogs(blogData);
 
-        const newsResponse = await fetch(
-          "https://newsapi.org/v2/everything?q=cybercrime&apiKey=b8ac6d02c2c74910b6b2e76e184065f6"
-        );
-        if (!newsResponse.ok) {
-          throw new Error("Failed to fetch news articles");
+        // Fetch news articles
+        try {
+          const newsResponse = await fetch(
+            `https://newsapi.org/v2/everything?q=cybercrime&apiKey=${process.env.REACT_APP_NEWS_API_KEY}`
+          );
+          if (!newsResponse.ok) {
+            const newsError = await newsResponse.json();
+            console.error("News API error:", newsError);
+            throw new Error("Failed to fetch news articles");
+          }
+          const newsData = await newsResponse.json();
+          console.log("Fetched news articles:", newsData.articles);
+          const validArticles = (newsData.articles || []).filter(
+            (article) =>
+              article.url &&
+              typeof article.url === "string" &&
+              article.url.startsWith("http")
+          );
+          setNews(validArticles);
+          setNewsError("");
+        } catch (newsErr) {
+          console.error("Error fetching news articles:", newsErr.message);
+          setNews([]);
+          setNewsError(newsErr.message);
+          toast.error("Failed to fetch news articles. Displaying blogs only.");
         }
-        const newsData = await newsResponse.json();
-        console.log("Fetched news articles:", newsData.articles);
-        const validArticles = (newsData.articles || []).filter(
-          (article) =>
-            article.url &&
-            typeof article.url === "string" &&
-            article.url.startsWith("http")
-        );
-        setNews(validArticles);
 
         setIsAdmin(localStorage.getItem("isAdmin") === "true");
       } catch (err) {
@@ -87,6 +100,10 @@ function Blog() {
 
     fetchData();
   }, [navigate]);
+
+  useEffect(() => {
+    setNewsError(""); // Clear news error when switching views
+  }, [viewMode]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -124,7 +141,7 @@ function Blog() {
       formData.append("category", blogForm.category);
       if (blogForm.photo) {
         formData.append("photo", blogForm.photo);
-        console.log("Uploading file:", blogForm.photo); // Log the file being uploaded
+        console.log("Uploading file:", blogForm.photo);
       }
 
       const url = editBlogId
@@ -463,6 +480,11 @@ function Blog() {
                   <h2 className="text-3xl font-bold text-pink-400 cyber-text mb-6 animate-pulse">
                     Cybercrime News
                   </h2>
+                  {newsError && (
+                    <p className="text-red-400 animate-glitch text-center mb-4">
+                      {newsError}
+                    </p>
+                  )}
                   {paginationLoading ? (
                     <div className="text-center text-pink-400 cyber-text">
                       <svg
@@ -480,7 +502,7 @@ function Blog() {
                       </svg>
                       Loading...
                     </div>
-                  ) : paginatedNews.length === 0 ? (
+                  ) : paginatedNews.length === 0 && !newsError ? (
                     <p className="text-gray-200 text-center">
                       No news articles found.
                     </p>
@@ -640,10 +662,7 @@ function Blog() {
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {paginatedBlogs.map((blog) => {
                           console.log("Blog ID:", blog._id);
-                          console.log(
-                            "Image URL:",
-                            `${process.env.REACT_APP_API_URL}/${blog.photo}`
-                          ); // Log the image URL
+                          console.log("Image URL:", blog.photo);
                           return (
                             <div
                               key={blog._id}
@@ -652,7 +671,11 @@ function Blog() {
                               <div className="absolute inset-0 bg-gradient-to-t from-pink-500/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
                               {blog.photo ? (
                                 <img
-                                  src={`${process.env.REACT_APP_API_URL}/${blog.photo}`}
+                                  src={
+                                    blog.photo.startsWith("http")
+                                      ? blog.photo
+                                      : `${process.env.REACT_APP_API_URL}/${blog.photo}`
+                                  }
                                   alt={blog.title}
                                   className="mt-4 w-full h-48 object-cover rounded-lg shadow-md"
                                   onError={(e) =>
