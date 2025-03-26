@@ -54,6 +54,7 @@ function Blog() {
         setBlogs(blogData);
 
         // Fetch news articles from backend proxy
+        // Fetch news articles from backend proxy
         try {
           const newsResponse = await fetch(
             `${process.env.REACT_APP_API_URL}/news/cybercrime-news`,
@@ -68,12 +69,19 @@ function Blog() {
           }
           const newsData = await newsResponse.json();
           console.log("Fetched news articles:", newsData.articles);
-          const validArticles = (newsData.articles || []).filter(
-            (article) =>
-              article.url &&
-              typeof article.url === "string" &&
-              article.url.startsWith("http")
-          );
+          const validArticles = (newsData.articles || [])
+            .filter(
+              (article) =>
+                article.url &&
+                typeof article.url === "string" &&
+                article.url.startsWith("http")
+            )
+            .map((article) => ({
+              ...article,
+              source: { name: article.source?.name || "Unknown" }, // GNews API has a different source format
+              urlToImage: article.image, // GNews uses 'image' instead of 'urlToImage'
+              publishedAt: article.publishedAt || new Date().toISOString(), // Ensure publishedAt exists
+            }));
           setNews(validArticles);
           setNewsError("");
         } catch (newsErr) {
