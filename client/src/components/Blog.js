@@ -53,10 +53,13 @@ function Blog() {
         console.log("Fetched blogs:", blogData);
         setBlogs(blogData);
 
-        // Fetch news articles
+        // Fetch news articles from backend proxy
         try {
           const newsResponse = await fetch(
-            `https://newsapi.org/v2/everything?q=cybercrime&apiKey=${process.env.REACT_APP_NEWS_API_KEY}`
+            `${process.env.REACT_APP_API_URL}/news/cybercrime-news`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
           );
           if (!newsResponse.ok) {
             const newsError = await newsResponse.json();
