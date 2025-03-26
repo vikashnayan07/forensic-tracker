@@ -697,7 +697,7 @@ function Dashboard() {
                               loading="lazy"
                               onError={(e) =>
                                 (e.target.src =
-                                  "https://via.placeholder.com/150x150?text=Image+Not+Found")
+                                  "https://placehold.co/150x150?text=Image+Not+Found")
                               }
                             />
                           ) : (
