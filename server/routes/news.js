@@ -18,7 +18,7 @@ router.get("/cybercrime-news", async (req, res) => {
     }
 
     const response = await axios.get(
-      `https://gnews.io/api/v4/search?q=cybercrime&lang=en&max=10&apikey=${gnewsApiKey}`
+      `https://gnews.io/api/v4/search?q=cybercrime&lang=en&max=30&apikey=${gnewsApiKey}`
     );
 
     res.json(response.data);
