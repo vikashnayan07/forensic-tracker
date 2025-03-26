@@ -10,14 +10,27 @@ const evidenceRoutes = require("./routes/evidence");
 const caseRoutes = require("./routes/cases");
 const blogRoutes = require("./routes/blog");
 
-// Middleware
+// Enable CORS for all routes
 app.use(
   cors({
     origin: "https://forensic-tracker-frontend.onrender.com",
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
+
+// Handle preflight OPTIONS requests
+app.options(
+  "*",
+  cors({
+    origin: "https://forensic-tracker-frontend.onrender.com",
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 
 // Routes
