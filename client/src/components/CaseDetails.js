@@ -39,7 +39,10 @@ function CaseDetails() {
           throw new Error(evidenceData.message || "Failed to fetch evidence");
 
         setCaseItem(caseData);
-        setEvidence(evidenceData.filter((item) => item.caseId?._id === id));
+        // Access the `evidence` array from the response and filter it
+        setEvidence(
+          evidenceData.evidence.filter((item) => item.caseId?._id === id)
+        );
         setIsAdmin(localStorage.getItem("isAdmin") === "true");
       } catch (err) {
         setError(err.message);
@@ -279,7 +282,7 @@ function CaseDetails() {
         <div className="absolute bottom-6">
           <div className="flex items-center">
             <img
-              src="https://via.placeholder.com/40"
+              src="https://placehold.co/40x40"
               alt="User"
               className="w-10 h-10 rounded-full mr-2"
             />
@@ -412,7 +415,7 @@ function CaseDetails() {
                       />
                     )}
                     <p className="text-gray-300 mt-2">
-                      Uploaded by: {item.staffId?.name || "Unknown"}
+                      Uploaded by: {item.uploadedBy?.name || "Unknown"}
                     </p>
                     <p className="text-gray-300 mt-2">
                       Date: {new Date(item.timestamp).toLocaleDateString()}
