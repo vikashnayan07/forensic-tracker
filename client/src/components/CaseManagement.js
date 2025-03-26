@@ -212,12 +212,7 @@ function CaseManagement() {
                           </p>
                           {evidenceItem.photo && (
                             <img
-                              src={`${
-                                process.env.REACT_APP_API_URL
-                              }/${evidenceItem.photo.replace(
-                                /^.*[\\\/]uploads[\\\/]/,
-                                "uploads/"
-                              )}`}
+                              src={evidenceItem.photo}
                               alt={evidenceItem.item}
                               className="mt-2 w-32 h-32 object-cover rounded-lg"
                             />

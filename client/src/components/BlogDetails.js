@@ -288,10 +288,7 @@ function BlogDetails() {
             </h2>
             {blog.photo ? (
               <img
-                src={`${process.env.REACT_APP_API_URL}/${blog.photo.replace(
-                  /^.*[\\\/]uploads[\\\/]/,
-                  "uploads/"
-                )}`}
+                src={blog.photo}
                 alt={blog.title}
                 className="w-full h-96 object-cover rounded-lg shadow-md mb-6"
                 onError={(e) =>

@@ -406,12 +406,7 @@ function CaseDetails() {
                     <p className="text-gray-200">{item.description}</p>
                     {item.photo && (
                       <img
-                        src={`${
-                          process.env.REACT_APP_API_URL
-                        }/${item.photo.replace(
-                          /^.*[\\\/]uploads[\\\/]/,
-                          "uploads/"
-                        )}`}
+                        src={item.photo}
                         alt={item.item}
                         className="mt-4 w-full h-48 object-cover rounded-lg shadow-md"
                       />
