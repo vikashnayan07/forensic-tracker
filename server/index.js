@@ -9,6 +9,7 @@ const authRoutes = require("./routes/auth");
 const evidenceRoutes = require("./routes/evidence");
 const caseRoutes = require("./routes/cases");
 const blogRoutes = require("./routes/blog");
+const newsRoutes = require("./routes/news");
 
 // Enable CORS for all routes
 app.use(
@@ -40,6 +41,7 @@ app.use("/auth", authRoutes);
 app.use("/evidence", evidenceRoutes);
 app.use("/cases", caseRoutes);
 app.use("/blog", blogRoutes);
+app.use("/news", newsRoutes);
 
 // Basic routes
 app.get("/", (req, res) => {
