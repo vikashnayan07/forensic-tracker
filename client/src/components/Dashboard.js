@@ -387,7 +387,7 @@ function Dashboard() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-900 flex flex-col lg:flex-row">
+    <div className="flex flex-col min-h-screen bg-gray-900">
       {/* Sidebar */}
       <div
         className={`w-64 bg-gray-800 bg-opacity-70 backdrop-blur-md p-4 sm:p-6 fixed h-full z-20 transform transition-transform duration-300 ${
@@ -502,7 +502,7 @@ function Dashboard() {
 
       {/* Main Content */}
       <div
-        className={`flex-1 relative overflow-hidden px-4 sm:px-6 lg:px-8 transition-all duration-300 ${
+        className={`flex-1 relative px-4 sm:px-6 lg:px-8 transition-all duration-300 ${
           isSidebarOpen ? "ml-64" : "ml-0"
         }`}
       >
@@ -577,7 +577,7 @@ function Dashboard() {
           </div>
         </header>
 
-        <div className="p-4 sm:p-8 z-10 bg-[radial-gradient(ellipse_at_center,_#1a0033_0%,_#0d001a_70%)] rounded-xl m-2 sm:m-4 shadow-2xl border border-pink-500 border-opacity-50 cyber-circuit relative">
+        <div className="p-4 sm:p-8 z-10 bg-[radial-gradient(ellipse_at_center,_#1a0033_0%,_#0d001a_70%)] rounded-xl m-2 sm:m-4 shadow-2xl border border-pink-500 border-opacity-50 cyber-circuit relative pb-32">
           {loading && (
             <div className="text-center text-pink-400 cyber-text">
               <svg
@@ -1126,6 +1126,7 @@ function Dashboard() {
           </div>
         )}
       </div>
+
       {/* Footer */}
       <Footer />
     </div>
