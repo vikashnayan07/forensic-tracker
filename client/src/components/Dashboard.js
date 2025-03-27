@@ -1132,20 +1132,19 @@ function Dashboard() {
   );
 }
 
-// Add the Footer component at the bottom of the file
-//Footer Component
+// Footer Component
 const Footer = () => {
   return (
-    <footer className="bg-gradient-to-r from-gray-900 via-purple-900 to-gray-900 text-white py-6 sm:py-8 mt-auto">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 animate-fade-in">
+    <footer className="bg-gradient-to-r from-gray-900 via-green-900 to-gray-900 text-white py-8 sm:py-10 mt-auto border-t border-pink-500 border-opacity-50">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Main Footer Content */}
-        <div className="flex flex-col lg:flex-row justify-between items-center space-y-6 lg:space-y-0 lg:space-x-8">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center space-y-8 lg:space-y-0 lg:space-x-12">
           {/* Useful Links */}
           <div className="w-full lg:w-1/3">
-            <h3 className="text-lg sm:text-xl font-semibold text-pink-400 cyber-text mb-4 text-center lg:text-left">
+            <h3 className="text-xl sm:text-2xl font-semibold text-pink-400 cyber-text mb-4 text-center lg:text-left">
               Useful Links
             </h3>
-            <div className="grid grid-cols-2 gap-2 sm:gap-4 text-sm sm:text-base">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 text-sm sm:text-base">
               {[
                 { name: "About Us", href: "/about" },
                 { name: "Terms of Use", href: "/terms" },
@@ -1159,7 +1158,7 @@ const Footer = () => {
                 <a
                   key={link.name}
                   href={link.href}
-                  className="text-gray-300 hover:text-pink-400 cyber-text transition-colors duration-300"
+                  className="text-gray-300 hover:text-green-400 cyber-text transition-colors duration-300 text-center lg:text-left"
                 >
                   {link.name}
                 </a>
@@ -1169,22 +1168,43 @@ const Footer = () => {
 
           {/* Social Media Icons */}
           <div className="w-full lg:w-1/3 flex justify-center">
-            <div className="flex space-x-4">
+            <div className="flex space-x-6">
               {[
-                { icon: "fab fa-x-twitter", href: "https://twitter.com" },
-                { icon: "fab fa-linkedin-in", href: "https://linkedin.com" },
-                { icon: "fab fa-facebook-f", href: "https://facebook.com" },
-                { icon: "fab fa-instagram", href: "https://instagram.com" },
-                { icon: "fab fa-youtube", href: "https://youtube.com" },
+                {
+                  icon: "fab fa-x-twitter",
+                  href: "https://twitter.com",
+                  label: "Twitter",
+                },
+                {
+                  icon: "fab fa-linkedin-in",
+                  href: "https://linkedin.com",
+                  label: "LinkedIn",
+                },
+                {
+                  icon: "fab fa-facebook-f",
+                  href: "https://facebook.com",
+                  label: "Facebook",
+                },
+                {
+                  icon: "fab fa-instagram",
+                  href: "https://instagram.com",
+                  label: "Instagram",
+                },
+                {
+                  icon: "fab fa-youtube",
+                  href: "https://youtube.com",
+                  label: "YouTube",
+                },
               ].map((social) => (
                 <a
                   key={social.icon}
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gray-300 hover:text-pink-400 transform hover:scale-125 transition-all duration-300"
+                  className="text-gray-300 hover:text-pink-400 transform hover:scale-110 transition-all duration-300"
+                  aria-label={`Follow us on ${social.label}`}
                 >
-                  <i className={`${social.icon} text-xl sm:text-2xl`}></i>
+                  <i className={`${social.icon} text-2xl sm:text-3xl`}></i>
                 </a>
               ))}
             </div>
@@ -1192,24 +1212,24 @@ const Footer = () => {
 
           {/* Powered By */}
           <div className="w-full lg:w-1/3 text-center lg:text-right">
-            <h3 className="text-lg sm:text-xl font-semibold text-pink-400 cyber-text mb-2">
+            <h3 className="text-xl sm:text-2xl font-semibold text-pink-400 cyber-text mb-3">
               Powered By
             </h3>
-            <p className="text-gray-300 text-sm sm:text-base">
+            <p className="text-gray-300 text-base sm:text-lg">
               Cyber Tracker Solutions
             </p>
-            <p className="text-gray-400 text-xs sm:text-sm mt-1">
+            <p className="text-gray-400 text-sm sm:text-base mt-1">
               Secure & Innovative Tracking Platform
             </p>
           </div>
         </div>
 
         {/* Copyright Strip */}
-        <div className="mt-6 pt-4 border-t border-gray-700 text-center">
-          <p className="text-gray-400 text-xs sm:text-sm">
+        <div className="mt-8 pt-6 border-t border-gray-700 text-center">
+          <p className="text-gray-400 text-sm sm:text-base">
             Copyright © 2025 - All Rights Reserved
           </p>
-          <p className="text-gray-400 text-xs sm:text-sm mt-1">
+          <p className="text-gray-400 text-sm sm:text-base mt-2">
             Developed and Maintained by{" "}
             <span className="text-pink-400 cyber-text">Vikash Nayan</span>
           </p>
