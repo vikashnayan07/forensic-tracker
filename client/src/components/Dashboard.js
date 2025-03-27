@@ -691,7 +691,11 @@ function Dashboard() {
                           {/* Add debug logging */}
                           {item.photo ? (
                             <LazyLoadImage
-                              src={item.photo}
+                              src={
+                                item.photo.startsWith("http")
+                                  ? item.photo
+                                  : `${process.env.REACT_APP_API_URL}/${item.photo}`
+                              }
                               alt={item.item}
                               className="mt-4 w-full h-48 object-cover rounded-lg shadow-md"
                               loading="lazy"

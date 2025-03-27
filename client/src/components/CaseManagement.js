@@ -215,9 +215,17 @@ function CaseManagement() {
                           </p>
                           {evidenceItem.photo && (
                             <img
-                              src={evidenceItem.photo}
+                              src={
+                                evidenceItem.photo.startsWith("http")
+                                  ? evidenceItem.photo
+                                  : `${process.env.REACT_APP_API_URL}/${evidenceItem.photo}`
+                              }
                               alt={evidenceItem.item}
                               className="mt-2 w-32 h-32 object-cover rounded-lg"
+                              onError={(e) =>
+                                (e.target.src =
+                                  "https://placehold.co/150x150?text=Image+Not+Found")
+                              }
                             />
                           )}
                         </div>
