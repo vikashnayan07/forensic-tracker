@@ -65,6 +65,7 @@ function Dashboard() {
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
   const itemsPerPage = 6;
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // New state for sidebar visibility
 
   const navigate = useNavigate();
 
@@ -388,7 +389,11 @@ function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-900 flex flex-col lg:flex-row">
       {/* Sidebar */}
-      <div className="w-full lg:w-64 bg-gray-800 bg-opacity-70 backdrop-blur-md p-4 sm:p-6 fixed lg:static h-auto lg:h-full z-20">
+      <div
+        className={`w-64 bg-gray-800 bg-opacity-70 backdrop-blur-md p-4 sm:p-6 fixed h-full z-20 transform transition-transform duration-300 lg:static lg:transform-none ${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+        }`}
+      >
         <div className="mb-6 sm:mb-8 flex items-center space-x-2">
           <i className="fas fa-fingerprint text-3xl sm:text-4xl text-green-400"></i>
           <h2 className="text-lg sm:text-xl font-bold text-green-400 cyber-text">
@@ -400,6 +405,7 @@ function Dashboard() {
             <a
               href="/dashboard"
               className="text-green-400 cyber-text hover:text-green-300"
+              onClick={() => setIsSidebarOpen(false)} // Close sidebar on link click
             >
               Dashboard
             </a>
@@ -408,6 +414,7 @@ function Dashboard() {
             <a
               href="/cases"
               className="text-green-400 cyber-text hover:text-green-300"
+              onClick={() => setIsSidebarOpen(false)}
             >
               Cases
             </a>
@@ -416,6 +423,7 @@ function Dashboard() {
             <a
               href="/evidence"
               className="text-green-400 cyber-text hover:text-green-300"
+              onClick={() => setIsSidebarOpen(false)}
             >
               Evidence
             </a>
@@ -424,6 +432,7 @@ function Dashboard() {
             <a
               href="/analytics"
               className="text-green-400 cyber-text hover:text-green-300"
+              onClick={() => setIsSidebarOpen(false)}
             >
               Analytics
             </a>
@@ -432,6 +441,7 @@ function Dashboard() {
             <a
               href="/team"
               className="text-green-400 cyber-text hover:text-green-300"
+              onClick={() => setIsSidebarOpen(false)}
             >
               Team
             </a>
@@ -440,6 +450,7 @@ function Dashboard() {
             <a
               href="/blog"
               className="text-green-400 cyber-text hover:text-green-300"
+              onClick={() => setIsSidebarOpen(false)}
             >
               Blog
             </a>
@@ -450,6 +461,7 @@ function Dashboard() {
                 <a
                   href="/admin"
                   className="text-green-400 cyber-text hover:text-green-300"
+                  onClick={() => setIsSidebarOpen(false)}
                 >
                   Pending Staff
                 </a>
@@ -458,6 +470,7 @@ function Dashboard() {
                 <a
                   href="/case-management"
                   className="text-green-400 cyber-text hover:text-green-300"
+                  onClick={() => setIsSidebarOpen(false)}
                 >
                   Case Management
                 </a>
@@ -466,6 +479,7 @@ function Dashboard() {
                 <a
                   href="/profile"
                   className="text-green-400 cyber-text hover:text-green-300"
+                  onClick={() => setIsSidebarOpen(false)}
                 >
                   Profile
                 </a>
@@ -487,12 +501,19 @@ function Dashboard() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 lg:ml-64 relative overflow-hidden px-4 sm:px-6 lg:px-8 pt-16 lg:pt-0">
+      <div className="flex-1 relative overflow-hidden px-4 sm:px-6 lg:px-8 lg:ml-64">
         <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-green-900 to-blue-900 opacity-80 animate-cyber-gradient"></div>
         <div className="absolute inset-0 cyber-rain"></div>
 
         <header className="bg-gray-800 bg-opacity-70 backdrop-blur-md p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center z-10 space-y-4 sm:space-y-0">
-          <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 w-full sm:w-1/2">
+          <div className="flex items-center w-full sm:w-1/2 space-x-4">
+            {/* Hamburger Menu Button for Mobile */}
+            <button
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              className="lg:hidden text-green-400 text-2xl focus:outline-none"
+            >
+              <i className={isSidebarOpen ? "fas fa-times" : "fas fa-bars"}></i>
+            </button>
             <input
               type="text"
               placeholder="Search cases or evidence..."
@@ -732,7 +753,6 @@ function Dashboard() {
                         </div>
                       ))}
                     </div>
-                    {/* Pagination Controls */}
                     <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row justify-center items-center space-y-2 sm:space-y-0 sm:space-x-4">
                       <button
                         onClick={() => handlePageChange(currentPage - 1)}
@@ -806,7 +826,6 @@ function Dashboard() {
           )}
         </div>
 
-        {/* Modals */}
         {showCaseModal && (
           <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 px-4">
             <div className="bg-gray-800 p-4 sm:p-6 rounded-lg border border-pink-500 w-full max-w-sm sm:max-w-md">
