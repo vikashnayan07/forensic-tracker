@@ -12,29 +12,18 @@ const blogRoutes = require("./routes/blog");
 const newsRoutes = require("./routes/news");
 
 // Enable CORS for all routes
-app.use(
-  cors({
-    origin: "https://forensic-tracker-frontend.onrender.com",
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  })
-);
-console.log("CORS middleware applied");
+const corsOptions = {
+  origin: "https://forensic-tracker-frontend.onrender.com",
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+};
 
-// Handle preflight OPTIONS requests
-app.options(
-  "*",
-  cors({
-    origin: "https://forensic-tracker-frontend.onrender.com",
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  })
-);
-console.log("OPTIONS handler applied");
+// Apply CORS middleware to all routes, including OPTIONS
+app.use(cors(corsOptions));
 
-app.use(express.json());
+// Log CORS middleware application
+console.log("CORS middleware applied with options:", corsOptions);
 
 // Routes
 app.use("/auth", authRoutes);
