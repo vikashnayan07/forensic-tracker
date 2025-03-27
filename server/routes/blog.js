@@ -65,6 +65,7 @@ router.get("/", authMiddleware, async (req, res) => {
 });
 
 // Create a blog post (Admin only)
+// Create a blog post (Admin only)
 router.post(
   "/",
   authMiddleware,
@@ -75,6 +76,11 @@ router.post(
     try {
       console.log("Request body:", req.body);
       console.log("Uploaded file:", req.file);
+      if (req.file) {
+        console.log("Cloudinary URL:", req.file.path);
+      } else {
+        console.log("No file uploaded");
+      }
 
       const { title, content, category } = req.body;
       if (!title || !content || !category) {
@@ -90,7 +96,11 @@ router.post(
         authorId: req.user.id,
         photo: req.file ? req.file.path : null, // Cloudinary URL
       });
+
+      console.log("Saving blog to MongoDB...");
       await newBlog.save();
+      console.log("Blog saved successfully");
+
       const populatedBlog = await Blog.findById(newBlog._id).populate(
         "authorId",
         "name email"
