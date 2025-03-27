@@ -204,10 +204,6 @@ function AdminPanel() {
       </div>
 
       {/* Placeholder for Case Management Section */}
-      <div>
-        <h2 className="text-2xl text-pink-500 mb-4">Case Management</h2>
-        <p className="text-white">Case management features coming soon...</p>
-      </div>
     </div>
   );
 }
