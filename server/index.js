@@ -11,6 +11,20 @@ const caseRoutes = require("./routes/cases");
 const blogRoutes = require("./routes/blog");
 const newsRoutes = require("./routes/news");
 
+// Global error handling for uncaught exceptions
+process.on("uncaughtException", (err) => {
+  console.error("Uncaught Exception:", err);
+  // Do not exit the process in production; let the server continue running
+  // process.exit(1);
+});
+
+// Global error handling for unhandled promise rejections
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("Unhandled Rejection at:", promise, "reason:", reason);
+  // Do not exit the process in production
+  // process.exit(1);
+});
+
 // Enable CORS for all routes
 const corsOptions = {
   origin: "https://forensic-tracker-frontend.onrender.com",
@@ -67,6 +81,14 @@ mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected successfully"))
   .catch((err) => console.error("MongoDB connection error:", err));
+
+// Error handling middleware for Express
+app.use((err, req, res, next) => {
+  console.error("Express error:", err);
+  res
+    .status(500)
+    .json({ message: "Internal server error", error: err.message });
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
