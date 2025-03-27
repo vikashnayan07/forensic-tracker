@@ -33,12 +33,15 @@ function CaseManagement() {
         const casesData = await casesRes.json();
         const evidenceData = await evidenceRes.json();
 
+        console.log("Cases response:", casesRes.status, casesData);
+        console.log("Evidence response:", evidenceRes.status, evidenceData);
+
         if (!casesRes.ok || !evidenceRes.ok) {
           throw new Error("Failed to fetch data");
         }
 
-        setCases(casesData);
-        setEvidence(evidenceData);
+        setCases(casesData); // Assuming /cases returns an array
+        setEvidence(evidenceData.evidence || []); // Extract the evidence array, fallback to empty array if missing
       } catch (err) {
         toast.error(err.message);
         if (err.message.includes("Invalid token")) navigate("/login");
