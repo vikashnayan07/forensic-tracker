@@ -15,8 +15,9 @@ const newsRoutes = require("./routes/news");
 const corsOptions = {
   origin: "https://forensic-tracker-frontend.onrender.com",
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  allowedHeaders: ["Content-Type", "Authorization", "Accept"], // Added "Accept"
   credentials: true,
+  optionsSuccessStatus: 204, // Ensure OPTIONS requests return 204
 };
 
 // Apply CORS middleware to all routes, including OPTIONS
@@ -24,6 +25,14 @@ app.use(cors(corsOptions));
 
 // Log CORS middleware application
 console.log("CORS middleware applied with options:", corsOptions);
+
+// Middleware to log all requests
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url} request received`);
+  next();
+});
+
+app.use(express.json());
 
 // Routes
 app.use("/auth", authRoutes);
