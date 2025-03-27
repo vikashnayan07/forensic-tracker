@@ -1,70 +1,104 @@
 const express = require("express");
 const router = express.Router();
+const path = require("path");
 const Blog = require("../models/Blog");
 const {
   authMiddleware,
   adminMiddleware,
 } = require("../middleware/authMiddleware");
 const multer = require("multer");
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const cloudinary = require("cloudinary").v2;
+const { v4: uuidv4 } = require("uuid");
 
 // Configure Cloudinary
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+try {
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
+  console.log("Cloudinary configuration:", {
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY ? "Set" : "Not set",
+    api_secret: process.env.CLOUDINARY_API_SECRET ? "Set" : "Not set",
+  });
+} catch (err) {
+  console.error("Error configuring Cloudinary:", err);
+}
 
-// Set up multer with Cloudinary storage
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: "forensic-tracker/blog",
-    allowed_formats: ["jpg", "jpeg", "png"],
-  },
-});
-
+// Set up multer to store files temporarily in memory
+const storage = multer.memoryStorage();
 const upload = multer({
   storage,
   limits: { fileSize: 5 * 1024 * 1024 }, // Limit file size to 5MB
   fileFilter: (req, file, cb) => {
-    const filetypes = /jpeg|jpg|png/;
-    const extname = filetypes.test(
-      path.extname(file.originalname).toLowerCase()
-    );
-    const mimetype = filetypes.test(file.mimetype);
-    if (extname && mimetype) {
-      return cb(null, true);
+    try {
+      const filetypes = /jpeg|jpg|png/;
+      const extname = filetypes.test(
+        path.extname(file.originalname).toLowerCase()
+      );
+      const mimetype = filetypes.test(file.mimetype);
+      if (extname && mimetype) {
+        return cb(null, true);
+      }
+      cb(new Error("Only images (jpeg, jpg, png) are allowed"));
+    } catch (err) {
+      console.error("Error in fileFilter:", err);
+      cb(err);
     }
-    cb(new Error("Only images (jpeg, jpg, png) are allowed"));
   },
 });
 
 // Multer error handling middleware
 const multerErrorHandler = (err, req, res, next) => {
   if (err instanceof multer.MulterError) {
+    console.error("Multer error:", err);
     return res.status(400).json({ message: err.message });
   } else if (err) {
+    console.error("File filter error:", err);
     return res.status(400).json({ message: err.message });
   }
   next();
 };
 
-// Get all blog posts
-router.get("/", authMiddleware, async (req, res) => {
-  try {
-    const blogs = await Blog.find().populate("authorId", "name email");
-    res.json(blogs);
-  } catch (err) {
-    console.error("Error in GET /blog:", err);
-    res
-      .status(500)
-      .json({ message: "Error fetching blog posts", error: err.message });
-  }
-});
+// Function to upload to Cloudinary with retries
+const uploadToCloudinary = (fileBuffer, retries = 3) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          folder: "forensic-tracker/blog",
+          public_id: `blog-${uuidv4()}`,
+          resource_type: "image",
+        },
+        (error, result) => {
+          if (error) {
+            console.error("Cloudinary upload error:", error);
+            if (retries > 0) {
+              console.log(
+                `Retrying Cloudinary upload (${retries} attempts left)...`
+              );
+              setTimeout(() => {
+                resolve(uploadToCloudinary(fileBuffer, retries - 1));
+              }, 1000);
+            } else {
+              reject(error);
+            }
+          } else {
+            console.log("Cloudinary upload successful:", result.secure_url);
+            resolve(result.secure_url);
+          }
+        }
+      );
 
-// Create a blog post (Admin only)
+      uploadStream.end(fileBuffer);
+    } catch (err) {
+      console.error("Error in uploadToCloudinary:", err);
+      reject(err);
+    }
+  });
+};
+
 // Create a blog post (Admin only)
 router.post(
   "/",
@@ -76,8 +110,12 @@ router.post(
     try {
       console.log("Request body:", req.body);
       console.log("Uploaded file:", req.file);
+      let photoUrl = null;
+
       if (req.file) {
-        console.log("Cloudinary URL:", req.file.path);
+        console.log("Uploading file to Cloudinary...");
+        photoUrl = await uploadToCloudinary(req.file.buffer);
+        console.log("Cloudinary URL:", photoUrl);
       } else {
         console.log("No file uploaded");
       }
@@ -94,7 +132,7 @@ router.post(
         content,
         category,
         authorId: req.user.id,
-        photo: req.file ? req.file.path : null, // Cloudinary URL
+        photo: photoUrl,
       });
 
       console.log("Saving blog to MongoDB...");
