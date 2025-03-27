@@ -99,6 +99,21 @@ const uploadToCloudinary = (fileBuffer, retries = 3) => {
   });
 };
 
+// Add this route just before the POST / route in blog.js
+router.get("/", authMiddleware, async (req, res) => {
+  try {
+    console.log("Fetching all blog posts...");
+    const blogs = await Blog.find().populate("authorId", "name email");
+    console.log("Blog posts fetched:", blogs);
+    res.json(blogs);
+  } catch (err) {
+    console.error("Error in GET /blog:", err);
+    res
+      .status(500)
+      .json({ message: "Error fetching blog posts", error: err.message });
+  }
+});
+
 // Create a blog post (Admin only)
 router.post(
   "/",
@@ -176,12 +191,19 @@ router.put(
         await cloudinary.uploader.destroy(`forensic-tracker/blog/${publicId}`);
       }
 
+      // If a new photo is uploaded, upload it to Cloudinary
+      let photoUrl = blog.photo;
+      if (req.file) {
+        console.log("Uploading new file to Cloudinary...");
+        photoUrl = await uploadToCloudinary(req.file.buffer);
+        console.log("New Cloudinary URL:", photoUrl);
+      }
+
       blog.title = title || blog.title;
       blog.content = content || blog.content;
       blog.category = category || blog.category;
-      if (req.file) {
-        blog.photo = req.file.path; // Cloudinary URL
-      }
+      blog.photo = photoUrl;
+
       await blog.save();
 
       const populatedBlog = await Blog.findById(blog._id).populate(

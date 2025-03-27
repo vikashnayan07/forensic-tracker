@@ -14,15 +14,11 @@ const newsRoutes = require("./routes/news");
 // Global error handling for uncaught exceptions
 process.on("uncaughtException", (err) => {
   console.error("Uncaught Exception:", err);
-  // Do not exit the process in production; let the server continue running
-  // process.exit(1);
 });
 
 // Global error handling for unhandled promise rejections
 process.on("unhandledRejection", (reason, promise) => {
   console.error("Unhandled Rejection at:", promise, "reason:", reason);
-  // Do not exit the process in production
-  // process.exit(1);
 });
 
 // Enable CORS for all routes
@@ -58,12 +54,12 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
-// Routes
-app.use("/auth", authRoutes);
-app.use("/evidence", evidenceRoutes);
-app.use("/cases", caseRoutes);
-app.use("/blog", blogRoutes);
-app.use("/news", newsRoutes);
+// Routes with /api prefix
+app.use("/api/auth", authRoutes);
+app.use("/api/evidence", evidenceRoutes);
+app.use("/api/cases", caseRoutes);
+app.use("/api/blog", blogRoutes);
+app.use("/api/news", newsRoutes);
 
 // Basic routes
 app.get("/", (req, res) => {
@@ -72,7 +68,7 @@ app.get("/", (req, res) => {
 });
 
 const { authMiddleware } = require("./middleware/authMiddleware");
-app.get("/protected", authMiddleware, (req, res) => {
+app.get("/api/protected", authMiddleware, (req, res) => {
   res.json({ message: "This is a protected route", user: req.user });
 });
 
