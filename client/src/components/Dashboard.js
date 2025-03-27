@@ -390,8 +390,8 @@ function Dashboard() {
     <div className="min-h-screen bg-gray-900 flex flex-col lg:flex-row">
       {/* Sidebar */}
       <div
-        className={`w-64 bg-gray-800 bg-opacity-70 backdrop-blur-md p-4 sm:p-6 fixed h-full z-20 transform transition-transform duration-300 lg:static lg:transform-none ${
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+        className={`w-64 bg-gray-800 bg-opacity-70 backdrop-blur-md p-4 sm:p-6 fixed h-full z-20 transform transition-transform duration-300 ${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         <div className="mb-6 sm:mb-8 flex items-center space-x-2">
@@ -405,7 +405,7 @@ function Dashboard() {
             <a
               href="/dashboard"
               className="text-green-400 cyber-text hover:text-green-300"
-              onClick={() => setIsSidebarOpen(false)} // Close sidebar on link click
+              onClick={() => setIsSidebarOpen(false)}
             >
               Dashboard
             </a>
@@ -487,7 +487,7 @@ function Dashboard() {
             </>
           )}
         </ul>
-        <div className="mt-6 lg:absolute lg:bottom-6 flex items-center space-x-2">
+        <div className="mt-6 flex items-center space-x-2">
           <img
             src="https://placehold.co/40x40"
             alt="User"
@@ -501,16 +501,21 @@ function Dashboard() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 relative overflow-hidden px-4 sm:px-6 lg:px-8 lg:ml-64">
+      <div
+        className={`flex-1 relative overflow-hidden px-4 sm:px-6 lg:px-8 transition-all duration-300 ${
+          isSidebarOpen ? "ml-64" : "ml-0"
+        }`}
+      >
         <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-green-900 to-blue-900 opacity-80 animate-cyber-gradient"></div>
         <div className="absolute inset-0 cyber-rain"></div>
 
         <header className="bg-gray-800 bg-opacity-70 backdrop-blur-md p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center z-10 space-y-4 sm:space-y-0">
           <div className="flex items-center w-full sm:w-1/2 space-x-4">
-            {/* Hamburger Menu Button for Mobile */}
+            {/* Hamburger Menu Button for All Devices */}
             <button
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="lg:hidden text-green-400 text-2xl focus:outline-none"
+              className="text-green-400 text-2xl focus:outline-none"
+              aria-label={isSidebarOpen ? "Close menu" : "Open menu"}
             >
               <i className={isSidebarOpen ? "fas fa-times" : "fas fa-bars"}></i>
             </button>
@@ -1121,11 +1126,14 @@ function Dashboard() {
           </div>
         )}
       </div>
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }
 
 // Add the Footer component at the bottom of the file
+//Footer Component
 const Footer = () => {
   return (
     <footer className="bg-gradient-to-r from-gray-900 via-purple-900 to-gray-900 text-white py-6 sm:py-8 mt-auto">
