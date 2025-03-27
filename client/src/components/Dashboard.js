@@ -1125,4 +1125,90 @@ function Dashboard() {
   );
 }
 
+// Add the Footer component at the bottom of the file
+const Footer = () => {
+  return (
+    <footer className="bg-gradient-to-r from-gray-900 via-purple-900 to-gray-900 text-white py-6 sm:py-8 mt-auto">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 animate-fade-in">
+        {/* Main Footer Content */}
+        <div className="flex flex-col lg:flex-row justify-between items-center space-y-6 lg:space-y-0 lg:space-x-8">
+          {/* Useful Links */}
+          <div className="w-full lg:w-1/3">
+            <h3 className="text-lg sm:text-xl font-semibold text-pink-400 cyber-text mb-4 text-center lg:text-left">
+              Useful Links
+            </h3>
+            <div className="grid grid-cols-2 gap-2 sm:gap-4 text-sm sm:text-base">
+              {[
+                { name: "About Us", href: "/about" },
+                { name: "Terms of Use", href: "/terms" },
+                { name: "Privacy Policy", href: "/privacy" },
+                { name: "Site Map", href: "/sitemap" },
+                { name: "Help", href: "/help" },
+                { name: "Contact Us", href: "/contact" },
+                { name: "Feedback", href: "/feedback" },
+                { name: "Recruitment", href: "/recruitment" },
+              ].map((link) => (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  className="text-gray-300 hover:text-pink-400 cyber-text transition-colors duration-300"
+                >
+                  {link.name}
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Social Media Icons */}
+          <div className="w-full lg:w-1/3 flex justify-center">
+            <div className="flex space-x-4">
+              {[
+                { icon: "fab fa-x-twitter", href: "https://twitter.com" },
+                { icon: "fab fa-linkedin-in", href: "https://linkedin.com" },
+                { icon: "fab fa-facebook-f", href: "https://facebook.com" },
+                { icon: "fab fa-instagram", href: "https://instagram.com" },
+                { icon: "fab fa-youtube", href: "https://youtube.com" },
+              ].map((social) => (
+                <a
+                  key={social.icon}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-300 hover:text-pink-400 transform hover:scale-125 transition-all duration-300"
+                >
+                  <i className={`${social.icon} text-xl sm:text-2xl`}></i>
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Powered By */}
+          <div className="w-full lg:w-1/3 text-center lg:text-right">
+            <h3 className="text-lg sm:text-xl font-semibold text-pink-400 cyber-text mb-2">
+              Powered By
+            </h3>
+            <p className="text-gray-300 text-sm sm:text-base">
+              Cyber Tracker Solutions
+            </p>
+            <p className="text-gray-400 text-xs sm:text-sm mt-1">
+              Secure & Innovative Tracking Platform
+            </p>
+          </div>
+        </div>
+
+        {/* Copyright Strip */}
+        <div className="mt-6 pt-4 border-t border-gray-700 text-center">
+          <p className="text-gray-400 text-xs sm:text-sm">
+            Copyright © 2025 - All Rights Reserved
+          </p>
+          <p className="text-gray-400 text-xs sm:text-sm mt-1">
+            Developed and Maintained by{" "}
+            <span className="text-pink-400 cyber-text">Vikash Nayan</span>
+          </p>
+        </div>
+      </div>
+    </footer>
+  );
+};
+
 export default Dashboard;
