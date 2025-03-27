@@ -145,3 +145,27 @@
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(236, 72, 153, 0.5);
 }
+@media (max-width: 640px) {
+  .cyber-rain {
+    display: none; /* Optional: Disable rain effect on mobile */
+  }
+  .animate-cyber-gradient {
+    animation-duration: 20s; /* Slow down gradient for performance */
+  }
+}
+
+/* index.css */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 1s ease-in-out forwards;
+}
