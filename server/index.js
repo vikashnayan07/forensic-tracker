@@ -1,6 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const fs = require("fs");
+const path = require("path");
 const app = express();
 require("dotenv").config({ path: "./server/.env" });
 
@@ -10,6 +12,13 @@ const evidenceRoutes = require("./routes/evidence");
 const caseRoutes = require("./routes/cases");
 const blogRoutes = require("./routes/blog");
 const newsRoutes = require("./routes/news");
+
+// Create uploads directory if it doesn't exist
+const uploadsDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+  console.log("Created uploads directory:", uploadsDir);
+}
 
 // Global error handling for uncaught exceptions
 process.on("uncaughtException", (err) => {
@@ -54,12 +63,15 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
-// Routes with /api prefix
-app.use("/api/auth", authRoutes);
-app.use("/api/evidence", evidenceRoutes);
-app.use("/api/cases", caseRoutes);
-app.use("/api/blog", blogRoutes);
-app.use("/api/news", newsRoutes);
+// Serve uploaded files
+app.use("/uploads", express.static("uploads"));
+
+// Routes without /api prefix
+app.use("/auth", authRoutes);
+app.use("/evidence", evidenceRoutes);
+app.use("/cases", caseRoutes);
+app.use("/blog", blogRoutes);
+app.use("/news", newsRoutes);
 
 // Basic routes
 app.get("/", (req, res) => {
@@ -68,7 +80,7 @@ app.get("/", (req, res) => {
 });
 
 const { authMiddleware } = require("./middleware/authMiddleware");
-app.get("/api/protected", authMiddleware, (req, res) => {
+app.get("/protected", authMiddleware, (req, res) => {
   res.json({ message: "This is a protected route", user: req.user });
 });
 
