@@ -35,7 +35,7 @@ function Dashboard() {
   const [evidence, setEvidence] = useState([]);
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [evidenceLoading, setEvidenceLoading] = useState(false); // Separate loading state for evidence
+  const [evidenceLoading, setEvidenceLoading] = useState(false);
   const [error, setError] = useState("");
   const [showCaseModal, setShowCaseModal] = useState(false);
   const [showEvidenceModal, setShowEvidenceModal] = useState(false);
@@ -61,10 +61,10 @@ function Dashboard() {
   const [statusFilter, setStatusFilter] = useState("All");
   const [modalLoading, setModalLoading] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1); // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
-  const itemsPerPage = 6; // Match backend limit
+  const itemsPerPage = 6;
 
   const navigate = useNavigate();
 
@@ -72,15 +72,11 @@ function Dashboard() {
     const fetchData = async () => {
       try {
         const token = localStorage.getItem("token");
-        if (!token) {
-          throw new Error("No token found. Please log in.");
-        }
+        if (!token) throw new Error("No token found. Please log in.");
 
         const profileRes = await fetch(
           `${process.env.REACT_APP_API_URL}/auth/profile`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
+          { headers: { Authorization: `Bearer ${token}` } }
         );
         if (!profileRes.ok) {
           const profileError = await profileRes.json();
@@ -133,9 +129,7 @@ function Dashboard() {
       });
       const evidenceRes = await fetch(
         `${process.env.REACT_APP_API_URL}/evidence?${queryParams.toString()}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       if (!evidenceRes.ok) {
         const evidenceError = await evidenceRes.json();
@@ -154,9 +148,7 @@ function Dashboard() {
   };
 
   const handlePageChange = (page) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
+    if (page >= 1 && page <= totalPages) setCurrentPage(page);
   };
 
   const handleLogout = () => {
@@ -238,7 +230,6 @@ function Dashboard() {
         photo: null,
       });
       toast.success("Evidence uploaded successfully!");
-      // Refresh evidence after upload
       await fetchEvidence(token, currentPage);
     } catch (err) {
       toast.error(err.message);
@@ -273,9 +264,7 @@ function Dashboard() {
         if (editForm.photo) formData.append("photo", editForm.photo);
       }
 
-      const url = isAdmin
-        ? `${process.env.REACT_APP_API_URL}/evidence/${editForm.id}`
-        : `${process.env.REACT_APP_API_URL}/evidence/${editForm.id}`;
+      const url = `${process.env.REACT_APP_API_URL}/evidence/${editForm.id}`;
       const method = isAdmin ? "PATCH" : "PUT";
 
       const response = await fetch(url, {
@@ -302,7 +291,6 @@ function Dashboard() {
         photo: null,
       });
       toast.success("Evidence updated successfully!");
-      // Refresh evidence after edit
       await fetchEvidence(token, currentPage);
     } catch (err) {
       toast.error(err.message);
@@ -312,9 +300,8 @@ function Dashboard() {
   };
 
   const handleDeleteClick = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this evidence?")) {
+    if (!window.confirm("Are you sure you want to delete this evidence?"))
       return;
-    }
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
@@ -330,7 +317,6 @@ function Dashboard() {
 
       setEvidence(evidence.filter((item) => item._id !== id));
       toast.success("Evidence deleted successfully!");
-      // Refresh evidence after delete
       await fetchEvidence(token, currentPage);
     } catch (err) {
       toast.error(err.message);
@@ -400,15 +386,16 @@ function Dashboard() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-900 flex">
-      <div className="w-64 bg-gray-800 bg-opacity-70 backdrop-blur-md p-6 fixed h-full z-20">
-        <div className="mb-8">
-          <i className="fas fa-fingerprint text-4xl text-green-400"></i>
-          <h2 className="text-xl font-bold text-green-400 cyber-text">
+    <div className="min-h-screen bg-gray-900 flex flex-col lg:flex-row">
+      {/* Sidebar */}
+      <div className="w-full lg:w-64 bg-gray-800 bg-opacity-70 backdrop-blur-md p-4 sm:p-6 fixed lg:static h-auto lg:h-full z-20">
+        <div className="mb-6 sm:mb-8 flex items-center space-x-2">
+          <i className="fas fa-fingerprint text-3xl sm:text-4xl text-green-400"></i>
+          <h2 className="text-lg sm:text-xl font-bold text-green-400 cyber-text">
             Cyber Tracker
           </h2>
         </div>
-        <ul className="space-y-4">
+        <ul className="space-y-3 sm:space-y-4 text-sm sm:text-base">
           <li>
             <a
               href="/dashboard"
@@ -458,68 +445,65 @@ function Dashboard() {
             </a>
           </li>
           {isAdmin && (
-            <li>
-              <a
-                href="/admin"
-                className="text-green-400 cyber-text hover:text-green-300"
-              >
-                Pending Staff
-              </a>
-            </li>
-          )}
-          {isAdmin && (
-            <li>
-              <a
-                href="/case-management"
-                className="text-green-400 cyber-text hover:text-green-300"
-              >
-                Case Management
-              </a>
-            </li>
-          )}
-          {isAdmin && (
-            <li>
-              <a
-                href="/profile"
-                className="text-green-400 cyber-text hover:text-green-300"
-              >
-                Profile
-              </a>
-            </li>
+            <>
+              <li>
+                <a
+                  href="/admin"
+                  className="text-green-400 cyber-text hover:text-green-300"
+                >
+                  Pending Staff
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/case-management"
+                  className="text-green-400 cyber-text hover:text-green-300"
+                >
+                  Case Management
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/profile"
+                  className="text-green-400 cyber-text hover:text-green-300"
+                >
+                  Profile
+                </a>
+              </li>
+            </>
           )}
         </ul>
-        <div className="absolute bottom-6">
-          <div className="flex items-center">
-            <img
-              src="https://placehold.co/40x40"
-              alt="User"
-              className="w-10 h-10 rounded-full mr-2"
-              onError={(e) => (e.target.src = "/images/default-profile.png")}
-            />
-            <span className="text-green-400 cyber-text">
-              {userProfile?.email || localStorage.getItem("email") || "User"}
-            </span>
-          </div>
+        <div className="mt-6 lg:absolute lg:bottom-6 flex items-center space-x-2">
+          <img
+            src="https://placehold.co/40x40"
+            alt="User"
+            className="w-8 sm:w-10 h-8 sm:h-10 rounded-full"
+            onError={(e) => (e.target.src = "/images/default-profile.png")}
+          />
+          <span className="text-green-400 cyber-text text-sm sm:text-base truncate">
+            {userProfile?.email || localStorage.getItem("email") || "User"}
+          </span>
         </div>
       </div>
 
-      <div className="flex-1 ml-64 relative overflow-hidden">
+      {/* Main Content */}
+      <div className="flex-1 lg:ml-64 relative overflow-hidden px-4 sm:px-6 lg:px-8 pt-16 lg:pt-0">
         <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-green-900 to-blue-900 opacity-80 animate-cyber-gradient"></div>
         <div className="absolute inset-0 cyber-rain"></div>
 
-        <header className="bg-gray-800 bg-opacity-70 backdrop-blur-md p-4 flex justify-between items-center z-10">
-          <div className="flex space-x-4 w-1/2">
+        <header className="bg-gray-800 bg-opacity-70 backdrop-blur-md p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center z-10 space-y-4 sm:space-y-0">
+          <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 w-full sm:w-1/2">
             <input
               type="text"
               placeholder="Search cases or evidence..."
               value={searchQuery}
               onChange={handleSearchChange}
-              className="p-2 bg-transparent border border-green-500 rounded-lg text-white cyber-text focus:ring-2 focus:ring-green-400 flex-1"
+              className="p-2 bg-transparent border border-green-500 rounded-lg text-white cyber-text focus:ring-2 focus:ring-green-400 w-full sm:flex-1 text-sm sm:text-base"
             />
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="p-2 bg-gray-800 border border-green-500 rounded-lg text-white cyber-text"
+              className="p-2 bg-gray-800 border border-green-500 rounded-lg text-white cyber-text text-sm sm:text-base"
             >
               <option value="All">All Cases</option>
               <option value="Open">Open</option>
@@ -530,9 +514,9 @@ function Dashboard() {
               value={caseFilter}
               onChange={(e) => {
                 setCaseFilter(e.target.value);
-                setCurrentPage(1); // Reset to first page on filter change
+                setCurrentPage(1);
               }}
-              className="p-2 bg-gray-800 border border-green-500 rounded-lg text-white cyber-text"
+              className="p-2 bg-gray-800 border border-green-500 rounded-lg text-white cyber-text text-sm sm:text-base"
             >
               <option value="">All Evidence</option>
               {cases.map((caseItem) => (
@@ -542,35 +526,38 @@ function Dashboard() {
               ))}
             </select>
           </div>
-          <div className="flex items-center space-x-4">
-            <i className="fas fa-bell text-green-400 text-2xl hover:text-green-300 cursor-pointer"></i>
+          <div className="flex flex-wrap items-center space-x-2 sm:space-x-4 w-full sm:w-auto">
+            <i className="fas fa-bell text-green-400 text-xl sm:text-2xl hover:text-green-300 cursor-pointer"></i>
             {isAdmin && (
               <button
                 onClick={() => setShowCaseModal(true)}
-                className="p-2 bg-green-500 text-white rounded-lg cyber-button hover:bg-green-600"
+                className="p-2 bg-green-500 text-white rounded-lg cyber-button hover:bg-green-600 text-sm sm:text-base"
               >
                 New Case
               </button>
             )}
             <button
               onClick={() => setShowEvidenceModal(true)}
-              className="p-2 bg-blue-500 text-white rounded-lg cyber-button hover:bg-blue-600"
+              className="p-2 bg-blue-500 text-white rounded-lg cyber-button hover:bg-blue-600 text-sm sm:text-base"
             >
               Upload Evidence
             </button>
             <button
               onClick={handleLogout}
-              className="p-2 bg-red-500 text-white rounded-lg cyber-button hover:bg-red-600"
+              className="p-2 bg-red-500 text-white rounded-lg cyber-button hover:bg-red-600 text-sm sm:text-base"
             >
               Logout
             </button>
           </div>
         </header>
 
-        <div className="p-8 z-10 bg-[radial-gradient(ellipse_at_center,_#1a0033_0%,_#0d001a_70%)] rounded-xl m-4 shadow-2xl border border-pink-500 border-opacity-50 cyber-circuit relative">
+        <div className="p-4 sm:p-8 z-10 bg-[radial-gradient(ellipse_at_center,_#1a0033_0%,_#0d001a_70%)] rounded-xl m-2 sm:m-4 shadow-2xl border border-pink-500 border-opacity-50 cyber-circuit relative">
           {loading && (
             <div className="text-center text-pink-400 cyber-text">
-              <svg className="animate-spin h-8 w-8 mx-auto" viewBox="0 0 24 24">
+              <svg
+                className="animate-spin h-6 sm:h-8 w-6 sm:w-8 mx-auto"
+                viewBox="0 0 24 24"
+              >
                 <circle
                   cx="12"
                   cy="12"
@@ -584,28 +571,32 @@ function Dashboard() {
             </div>
           )}
           {error && (
-            <p className="text-red-400 animate-glitch text-center">{error}</p>
+            <p className="text-red-400 animate-glitch text-center text-sm sm:text-base">
+              {error}
+            </p>
           )}
 
           {!loading && !error && (
             <>
-              <section className="mb-12">
-                <h2 className="text-3xl font-bold text-pink-400 cyber-text mb-6 animate-pulse">
+              <section className="mb-8 sm:mb-12">
+                <h2 className="text-2xl sm:text-3xl font-bold text-pink-400 cyber-text mb-4 sm:mb-6 animate-pulse">
                   Active Cases
                 </h2>
                 {filteredCases.length === 0 ? (
-                  <p className="text-gray-200 text-center">No cases found.</p>
+                  <p className="text-gray-200 text-center text-sm sm:text-base">
+                    No cases found.
+                  </p>
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                     {filteredCases.map((caseItem) => (
                       <div
                         key={caseItem._id}
-                        className="bg-gray-800 bg-opacity-90 p-6 rounded-lg border border-pink-500 hover:shadow-lg hover:shadow-pink-500/50 transform hover:scale-105 transition-all duration-300"
+                        className="bg-gray-800 bg-opacity-90 p-4 sm:p-6 rounded-lg border border-pink-500 hover:shadow-lg hover:shadow-pink-500/50 transform hover:scale-105 transition-all duration-300"
                       >
-                        <h3 className="text-xl font-semibold text-pink-400 cyber-text">
+                        <h3 className="text-lg sm:text-xl font-semibold text-pink-400 cyber-text">
                           {caseItem.caseId}
                         </h3>
-                        <p className="text-gray-200">
+                        <p className="text-gray-200 text-sm sm:text-base">
                           Status:{" "}
                           <span
                             className={
@@ -617,16 +608,16 @@ function Dashboard() {
                             {caseItem.status}
                           </span>
                         </p>
-                        <p className="text-gray-200">
+                        <p className="text-gray-200 text-sm sm:text-base">
                           Date: {new Date(caseItem.date).toLocaleDateString()}
                         </p>
-                        <p className="text-gray-200">
+                        <p className="text-gray-200 text-sm sm:text-base">
                           Location: {caseItem.location}
                         </p>
-                        <p className="text-gray-200">
+                        <p className="text-gray-200 text-sm sm:text-base">
                           Assigned: {caseItem.staffId?.name || "Unassigned"}
                         </p>
-                        <p className="text-gray-200">
+                        <p className="text-gray-200 text-sm sm:text-base">
                           Evidence Items:{" "}
                           {
                             evidence.filter(
@@ -634,13 +625,13 @@ function Dashboard() {
                             ).length
                           }
                         </p>
-                        <p className="text-gray-200">
+                        <p className="text-gray-200 text-sm sm:text-base">
                           Remarks:{" "}
                           {caseItem.remarks ? caseItem.remarks.length : 0}
                         </p>
                         <button
                           onClick={() => navigate(`/cases/${caseItem._id}`)}
-                          className="mt-4 p-2 bg-pink-500 text-white rounded-lg cyber-button hover:bg-pink-600 w-full"
+                          className="mt-2 sm:mt-4 p-1 sm:p-2 bg-pink-500 text-white rounded-lg cyber-button hover:bg-pink-600 w-full text-sm sm:text-base"
                         >
                           View Details
                         </button>
@@ -650,14 +641,14 @@ function Dashboard() {
                 )}
               </section>
 
-              <section className="mb-12">
-                <h2 className="text-3xl font-bold text-pink-400 cyber-text mb-6 animate-pulse">
+              <section className="mb-8 sm:mb-12">
+                <h2 className="text-2xl sm:text-3xl font-bold text-pink-400 cyber-text mb-4 sm:mb-6 animate-pulse">
                   Evidence Gallery
                 </h2>
                 {evidenceLoading ? (
                   <div className="text-center text-pink-400 cyber-text">
                     <svg
-                      className="animate-spin h-8 w-8 mx-auto"
+                      className="animate-spin h-6 sm:h-8 w-6 sm:w-8 mx-auto"
                       viewBox="0 0 24 24"
                     >
                       <circle
@@ -672,23 +663,23 @@ function Dashboard() {
                     Loading evidence...
                   </div>
                 ) : filteredEvidence.length === 0 ? (
-                  <p className="text-gray-200 text-center">
+                  <p className="text-gray-200 text-center text-sm sm:text-base">
                     No evidence found.
                   </p>
                 ) : (
                   <>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                       {filteredEvidence.map((item) => (
                         <div
                           key={item._id}
-                          className="bg-gray-800 bg-opacity-90 p-6 rounded-lg border border-pink-500 hover:shadow-lg hover:shadow-pink-500/50 transform hover:scale-105 transition-all duration-300"
+                          className="bg-gray-800 bg-opacity-90 p-4 sm:p-6 rounded-lg border border-pink-500 hover:shadow-lg hover:shadow-pink-500/50 transform hover:scale-105 transition-all duration-300"
                         >
-                          <h3 className="text-xl font-semibold text-pink-400 cyber-text">
+                          <h3 className="text-lg sm:text-xl font-semibold text-pink-400 cyber-text">
                             {item.item}
                           </h3>
-                          <p className="text-gray-200">{item.description}</p>
-                          {console.log("Evidence photo URL:", item.photo)}{" "}
-                          {/* Add debug logging */}
+                          <p className="text-gray-200 text-sm sm:text-base">
+                            {item.description}
+                          </p>
                           {item.photo ? (
                             <LazyLoadImage
                               src={
@@ -697,7 +688,7 @@ function Dashboard() {
                                   : `${process.env.REACT_APP_API_URL}/${item.photo}`
                               }
                               alt={item.item}
-                              className="mt-4 w-full h-48 object-cover rounded-lg shadow-md"
+                              className="mt-2 sm:mt-4 w-full h-40 sm:h-48 object-cover rounded-lg shadow-md"
                               loading="lazy"
                               onError={(e) =>
                                 (e.target.src =
@@ -705,34 +696,34 @@ function Dashboard() {
                               }
                             />
                           ) : (
-                            <p className="text-gray-200 mt-4">
+                            <p className="text-gray-200 mt-2 sm:mt-4 text-sm sm:text-base">
                               No photo available
                             </p>
                           )}
-                          <p className="text-gray-300 mt-2">
+                          <p className="text-gray-300 mt-2 text-sm sm:text-base">
                             Case:{" "}
                             {item.caseId && item.caseId.caseId
                               ? item.caseId.caseId
                               : "Unassigned"}
                           </p>
-                          <p className="text-gray-300 mt-2">
+                          <p className="text-gray-300 mt-2 text-sm sm:text-base">
                             Uploaded by: {item.uploadedBy?.name || "Unknown"}
                           </p>
-                          <p className="text-gray-300 mt-2">
+                          <p className="text-gray-300 mt-2 text-sm sm:text-base">
                             Date:{" "}
                             {new Date(item.timestamp).toLocaleDateString()}
                           </p>
-                          <div className="mt-4 flex space-x-2">
+                          <div className="mt-2 sm:mt-4 flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
                             <button
                               onClick={() => handleEditClick(item)}
-                              className="p-2 bg-yellow-500 text-white rounded-lg cyber-button hover:bg-yellow-600 w-full"
+                              className="p-1 sm:p-2 bg-yellow-500 text-white rounded-lg cyber-button hover:bg-yellow-600 w-full text-sm sm:text-base"
                             >
                               Edit
                             </button>
                             {isAdmin && (
                               <button
                                 onClick={() => handleDeleteClick(item._id)}
-                                className="p-2 bg-red-500 text-white rounded-lg cyber-button hover:bg-red-600 w-full"
+                                className="p-1 sm:p-2 bg-red-500 text-white rounded-lg cyber-button hover:bg-red-600 w-full text-sm sm:text-base"
                               >
                                 Delete
                               </button>
@@ -742,22 +733,22 @@ function Dashboard() {
                       ))}
                     </div>
                     {/* Pagination Controls */}
-                    <div className="mt-6 flex justify-center items-center space-x-4">
+                    <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row justify-center items-center space-y-2 sm:space-y-0 sm:space-x-4">
                       <button
                         onClick={() => handlePageChange(currentPage - 1)}
                         disabled={currentPage === 1}
-                        className="p-2 bg-pink-500 text-white rounded-lg cyber-button hover:bg-pink-600 disabled:bg-pink-300"
+                        className="p-1 sm:p-2 bg-pink-500 text-white rounded-lg cyber-button hover:bg-pink-600 disabled:bg-pink-300 text-sm sm:text-base"
                       >
                         Previous
                       </button>
-                      <span className="text-gray-200 cyber-text">
+                      <span className="text-gray-200 cyber-text text-sm sm:text-base">
                         Page {currentPage} of {totalPages} (Total Items:{" "}
                         {totalItems})
                       </span>
                       <button
                         onClick={() => handlePageChange(currentPage + 1)}
                         disabled={currentPage === totalPages}
-                        className="p-2 bg-pink-500 text-white rounded-lg cyber-button hover:bg-pink-600 disabled:bg-pink-300"
+                        className="p-1 sm:p-2 bg-pink-500 text-white rounded-lg cyber-button hover:bg-pink-600 disabled:bg-pink-300 text-sm sm:text-base"
                       >
                         Next
                       </button>
@@ -767,16 +758,16 @@ function Dashboard() {
               </section>
 
               <section>
-                <h2 className="text-3xl font-bold text-pink-400 cyber-text mb-6 animate-pulse">
+                <h2 className="text-2xl sm:text-3xl font-bold text-pink-400 cyber-text mb-4 sm:mb-6 animate-pulse">
                   Analytics
                 </h2>
                 {cases.length === 0 ? (
-                  <p className="text-gray-200 text-center">
+                  <p className="text-gray-200 text-center text-sm sm:text-base">
                     No data available for analytics.
                   </p>
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="bg-gray-800 bg-opacity-90 p-6 rounded-lg border border-pink-500">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                    <div className="bg-gray-800 bg-opacity-90 p-4 sm:p-6 rounded-lg border border-pink-500">
                       <Bar
                         data={barData}
                         options={{
@@ -788,7 +779,7 @@ function Dashboard() {
                         }}
                       />
                     </div>
-                    <div className="bg-gray-800 bg-opacity-90 p-6 rounded-lg border border-pink-500">
+                    <div className="bg-gray-800 bg-opacity-90 p-4 sm:p-6 rounded-lg border border-pink-500">
                       <Pie
                         data={pieData}
                         options={{
@@ -796,7 +787,7 @@ function Dashboard() {
                         }}
                       />
                     </div>
-                    <div className="bg-gray-800 bg-opacity-90 p-6 rounded-lg border border-pink-500">
+                    <div className="bg-gray-800 bg-opacity-90 p-4 sm:p-6 rounded-lg border border-pink-500">
                       <Line
                         data={lineData}
                         options={{
@@ -815,10 +806,11 @@ function Dashboard() {
           )}
         </div>
 
+        {/* Modals */}
         {showCaseModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-            <div className="bg-gray-800 p-6 rounded-lg border border-pink-500 w-full max-w-md">
-              <h3 className="text-2xl text-pink-400 cyber-text mb-4">
+          <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 px-4">
+            <div className="bg-gray-800 p-4 sm:p-6 rounded-lg border border-pink-500 w-full max-w-sm sm:max-w-md">
+              <h3 className="text-xl sm:text-2xl text-pink-400 cyber-text mb-4">
                 Create New Case
               </h3>
               <form onSubmit={handleCaseSubmit}>
@@ -829,7 +821,7 @@ function Dashboard() {
                   onChange={(e) =>
                     setCaseForm({ ...caseForm, caseId: e.target.value })
                   }
-                  className="w-full p-2 mb-4 bg-transparent border border-pink-500 rounded-lg text-white cyber-text"
+                  className="w-full p-2 mb-4 bg-transparent border border-pink-500 rounded-lg text-white cyber-text text-sm sm:text-base"
                   required
                   disabled={modalLoading}
                 />
@@ -840,27 +832,27 @@ function Dashboard() {
                   onChange={(e) =>
                     setCaseForm({ ...caseForm, location: e.target.value })
                   }
-                  className="w-full p-2 mb-4 bg-transparent border border-pink-500 rounded-lg text-white cyber-text"
+                  className="w-full p-2 mb-4 bg-transparent border border-pink-500 rounded-lg text-white cyber-text text-sm sm:text-base"
                   required
                   disabled={modalLoading}
                 />
-                <div className="flex justify-end space-x-4">
+                <div className="flex justify-end space-x-2 sm:space-x-4">
                   <button
                     type="button"
                     onClick={() => setShowCaseModal(false)}
-                    className="p-2 bg-red-500 text-white rounded-lg cyber-button hover:bg-red-600"
+                    className="p-1 sm:p-2 bg-red-500 text-white rounded-lg cyber-button hover:bg-red-600 text-sm sm:text-base"
                     disabled={modalLoading}
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="p-2 bg-pink-500 text-white rounded-lg cyber-button hover:bg-pink-600 disabled:bg-pink-300"
+                    className="p-1 sm:p-2 bg-pink-500 text-white rounded-lg cyber-button hover:bg-pink-600 disabled:bg-pink-300 text-sm sm:text-base"
                     disabled={modalLoading}
                   >
                     {modalLoading ? (
                       <svg
-                        className="animate-spin h-5 w-5 mx-auto"
+                        className="animate-spin h-4 sm:h-5 w-4 sm:w-5 mx-auto"
                         viewBox="0 0 24 24"
                       >
                         <circle
@@ -883,9 +875,9 @@ function Dashboard() {
         )}
 
         {showEvidenceModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-            <div className="bg-gray-800 p-6 rounded-lg border border-pink-500 w-full max-w-md">
-              <h3 className="text-2xl text-pink-400 cyber-text mb-4">
+          <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 px-4">
+            <div className="bg-gray-800 p-4 sm:p-6 rounded-lg border border-pink-500 w-full max-w-sm sm:max-w-md">
+              <h3 className="text-xl sm:text-2xl text-pink-400 cyber-text mb-4">
                 Upload Evidence
               </h3>
               <form onSubmit={handleEvidenceSubmit}>
@@ -896,7 +888,7 @@ function Dashboard() {
                   onChange={(e) =>
                     setEvidenceForm({ ...evidenceForm, item: e.target.value })
                   }
-                  className="w-full p-2 mb-4 bg-transparent border border-pink-500 rounded-lg text-white cyber-text"
+                  className="w-full p-2 mb-4 bg-transparent border border-pink-500 rounded-lg text-white cyber-text text-sm sm:text-base"
                   required
                   disabled={modalLoading}
                 />
@@ -910,7 +902,7 @@ function Dashboard() {
                       description: e.target.value,
                     })
                   }
-                  className="w-full p-2 mb-4 bg-transparent border border-pink-500 rounded-lg text-white cyber-text"
+                  className="w-full p-2 mb-4 bg-transparent border border-pink-500 rounded-lg text-white cyber-text text-sm sm:text-base"
                   required
                   disabled={modalLoading}
                 />
@@ -924,7 +916,7 @@ function Dashboard() {
                       location: e.target.value,
                     })
                   }
-                  className="w-full p-2 mb-4 bg-transparent border border-pink-500 rounded-lg text-white cyber-text"
+                  className="w-full p-2 mb-4 bg-transparent border border-pink-500 rounded-lg text-white cyber-text text-sm sm:text-base"
                   required
                   disabled={modalLoading}
                 />
@@ -933,7 +925,7 @@ function Dashboard() {
                   onChange={(e) =>
                     setEvidenceForm({ ...evidenceForm, caseId: e.target.value })
                   }
-                  className="w-full p-2 mb-4 bg-gray-800 border border-pink-500 rounded-lg text-white cyber-text"
+                  className="w-full p-2 mb-4 bg-gray-800 border border-pink-500 rounded-lg text-white cyber-text text-sm sm:text-base"
                   required
                   disabled={modalLoading}
                 >
@@ -946,9 +938,9 @@ function Dashboard() {
                 </select>
                 <div
                   {...getRootProps()}
-                  className={`p-4 mb-4 border-2 border-dashed ${
+                  className={`p-2 sm:p-4 mb-4 border-2 border-dashed ${
                     isDragActive ? "border-pink-400" : "border-pink-500"
-                  } rounded-lg text-center text-gray-200 cyber-text ${
+                  } rounded-lg text-center text-gray-200 cyber-text text-sm sm:text-base ${
                     modalLoading ? "opacity-50" : ""
                   }`}
                 >
@@ -959,23 +951,23 @@ function Dashboard() {
                     <p>Drag & drop an image here, or click to select</p>
                   )}
                 </div>
-                <div className="flex justify-end space-x-4">
+                <div className="flex justify-end space-x-2 sm:space-x-4">
                   <button
                     type="button"
                     onClick={() => setShowEvidenceModal(false)}
-                    className="p-2 bg-red-500 text-white rounded-lg cyber-button hover:bg-red-600"
+                    className="p-1 sm:p-2 bg-red-500 text-white rounded-lg cyber-button hover:bg-red-600 text-sm sm:text-base"
                     disabled={modalLoading}
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="p-2 bg-pink-500 text-white rounded-lg cyber-button hover:bg-pink-600 disabled:bg-pink-300"
+                    className="p-1 sm:p-2 bg-pink-500 text-white rounded-lg cyber-button hover:bg-pink-600 disabled:bg-pink-300 text-sm sm:text-base"
                     disabled={modalLoading}
                   >
                     {modalLoading ? (
                       <svg
-                        className="animate-spin h-5 w-5 mx-auto"
+                        className="animate-spin h-4 sm:h-5 w-4 sm:w-5 mx-auto"
                         viewBox="0 0 24 24"
                       >
                         <circle
@@ -998,9 +990,9 @@ function Dashboard() {
         )}
 
         {showEditModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-            <div className="bg-gray-800 p-6 rounded-lg border border-pink-500 w-full max-w-md">
-              <h3 className="text-2xl text-pink-400 cyber-text mb-4">
+          <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 px-4">
+            <div className="bg-gray-800 p-4 sm:p-6 rounded-lg border border-pink-500 w-full max-w-sm sm:max-w-md">
+              <h3 className="text-xl sm:text-2xl text-pink-400 cyber-text mb-4">
                 Edit Evidence
               </h3>
               <form onSubmit={handleEditSubmit}>
@@ -1011,7 +1003,7 @@ function Dashboard() {
                   onChange={(e) =>
                     setEditForm({ ...editForm, item: e.target.value })
                   }
-                  className="w-full p-2 mb-4 bg-transparent border border-pink-500 rounded-lg text-white cyber-text"
+                  className="w-full p-2 mb-4 bg-transparent border border-pink-500 rounded-lg text-white cyber-text text-sm sm:text-base"
                   required
                   disabled={modalLoading}
                 />
@@ -1022,7 +1014,7 @@ function Dashboard() {
                   onChange={(e) =>
                     setEditForm({ ...editForm, description: e.target.value })
                   }
-                  className="w-full p-2 mb-4 bg-transparent border border-pink-500 rounded-lg text-white cyber-text"
+                  className="w-full p-2 mb-4 bg-transparent border border-pink-500 rounded-lg text-white cyber-text text-sm sm:text-base"
                   required
                   disabled={modalLoading}
                 />
@@ -1033,7 +1025,7 @@ function Dashboard() {
                   onChange={(e) =>
                     setEditForm({ ...editForm, location: e.target.value })
                   }
-                  className="w-full p-2 mb-4 bg-transparent border border-pink-500 rounded-lg text-white cyber-text"
+                  className="w-full p-2 mb-4 bg-transparent border border-pink-500 rounded-lg text-white cyber-text text-sm sm:text-base"
                   required
                   disabled={modalLoading}
                 />
@@ -1044,7 +1036,7 @@ function Dashboard() {
                       onChange={(e) =>
                         setEditForm({ ...editForm, caseId: e.target.value })
                       }
-                      className="w-full p-2 mb-4 bg-gray-800 border border-pink-500 rounded-lg text-white cyber-text"
+                      className="w-full p-2 mb-4 bg-gray-800 border border-pink-500 rounded-lg text-white cyber-text text-sm sm:text-base"
                       required
                       disabled={modalLoading}
                     >
@@ -1057,9 +1049,9 @@ function Dashboard() {
                     </select>
                     <div
                       {...getRootProps()}
-                      className={`p-4 mb-4 border-2 border-dashed ${
+                      className={`p-2 sm:p-4 mb-4 border-2 border-dashed ${
                         isDragActive ? "border-pink-400" : "border-pink-500"
-                      } rounded-lg text-center text-gray-200 cyber-text ${
+                      } rounded-lg text-center text-gray-200 cyber-text text-sm sm:text-base ${
                         modalLoading ? "opacity-50" : ""
                       }`}
                     >
@@ -1072,23 +1064,23 @@ function Dashboard() {
                     </div>
                   </>
                 )}
-                <div className="flex justify-end space-x-4">
+                <div className="flex justify-end space-x-2 sm:space-x-4">
                   <button
                     type="button"
                     onClick={() => setShowEditModal(false)}
-                    className="p-2 bg-red-500 text-white rounded-lg cyber-button hover:bg-red-600"
+                    className="p-1 sm:p-2 bg-red-500 text-white rounded-lg cyber-button hover:bg-red-600 text-sm sm:text-base"
                     disabled={modalLoading}
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="p-2 bg-pink-500 text-white rounded-lg cyber-button hover:bg-pink-600 disabled:bg-pink-300"
+                    className="p-1 sm:p-2 bg-pink-500 text-white rounded-lg cyber-button hover:bg-pink-600 disabled:bg-pink-300 text-sm sm:text-base"
                     disabled={modalLoading}
                   >
                     {modalLoading ? (
                       <svg
-                        className="animate-spin h-5 w-5 mx-auto"
+                        className="animate-spin h-4 sm:h-5 w-4 sm:w-5 mx-auto"
                         viewBox="0 0 24 24"
                       >
                         <circle
