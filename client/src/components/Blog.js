@@ -153,6 +153,8 @@ function Blog() {
       if (blogForm.photo) {
         formData.append("photo", blogForm.photo);
         console.log("Uploading file:", blogForm.photo);
+      } else {
+        console.log("No photo selected");
       }
 
       const url = editBlogId
