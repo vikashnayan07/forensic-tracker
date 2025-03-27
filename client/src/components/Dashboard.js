@@ -1217,7 +1217,7 @@ const Footer = () => {
               Powered By
             </h3>
             <p className="text-gray-300 text-base sm:text-lg">
-              Cyber Tracker Solutions
+              VikNex IT Solutions
             </p>
             <p className="text-gray-400 text-sm sm:text-base mt-1">
               Secure & Innovative Tracking Platform
